@@ -20,23 +20,32 @@ class GPTChat {
     newMessage(history) {
         return __awaiter(this, void 0, void 0, function* () {
             // Prepare the messages for OpenAI API input
-            const messages = history.map((event) => ({
-                role: event.role,
-                content: JSON.stringify(event)
-            }));
-            // Call OpenAI API to get the response
-            const response = yield this.openai.createChatCompletion({
-                model: "gpt-3.5-turbo",
-                messages: messages,
-                temperature: 1,
-                max_tokens: 256,
-                top_p: 1,
-                frequency_penalty: 0,
-                presence_penalty: 0,
+            const messages = history.map((event) => {
+                let content = "";
+                return {
+                    role: event.role,
+                    content: event.message || "",
+                };
             });
-            // Parse the response from OpenAI
-            const assistantResponse = JSON.parse(response.data.choices[0].message.content);
-            return assistantResponse;
+            // Call OpenAI API to get the response
+            try {
+                const completion = {
+                    model: "gpt-3.5-turbo",
+                    messages: messages,
+                    temperature: 1,
+                    max_tokens: 256,
+                    top_p: 1,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                };
+                const response = yield this.openai.createChatCompletion(completion);
+                // Parse the response from OpenAI
+                const assistantResponse = JSON.parse(response.data.choices[0].message.content);
+                return assistantResponse;
+            }
+            catch (e) {
+                throw new Error(`Error calling OpenAI API: ${e.message}`);
+            }
         });
     }
 }

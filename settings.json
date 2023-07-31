@@ -1,10 +1,14 @@
 {
-    "language": "en",
+    "language": "english",
+    "agency": "Plus Travel",
     "openai": {
-        "apiKey": "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"
+        "apiKey": "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"
     },
     "elevenLabs": {
         "apiKey": "6abedc1d7edcc13ecde02390e25f13b8",
-        "voiceId": "21m00Tcm4TlvDq8ikWAM"
+        "voiceId": "ErXwobaYiN019PkySvjV",
+        "voice": {
+            "gender": "female"
+        }
     }
 }

@@ -29,8 +29,7 @@ class GPTChat {
     // Call OpenAI API to get the response
     try {
       const completion = {
-        // model: "gpt-3.5-turbo",
-        model: "gpt-3.5-turbo-16k",
+        model: "gpt-3.5-turbo",
         messages: messages,
         temperature: 1,
         max_tokens: 256,

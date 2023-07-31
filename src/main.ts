@@ -11,7 +11,7 @@ import readline from "readline";
 const [settingsFile, callerId, messageWavFile] = process.argv.slice(2);
 
 // Load settings from the provided settings file
-const settings: Settings = JSON.parse(fs.readFileSync(settingsFile, 'utf8'));
+let settings: Settings = JSON.parse(fs.readFileSync(settingsFile, 'utf8'));
 
 // Create instances of the components
 const db = new Database();
@@ -23,13 +23,17 @@ let audioProcesseed = false;
 
 
 async function main() {
+    const voice = await elevenLabs.getVoice();
+    if(voice.name){
+        settings.voice = voice.name;
+    }
 
     let caller = await db.getCaller(callerId);
 
     if (caller === null) {
         const c = await db.upsertCaller({
             callerId,
-            history: getDefaultHistory(callerId)
+            history: getDefaultHistory(callerId, settings)
         });
 
         caller = await db.getCaller(callerId);

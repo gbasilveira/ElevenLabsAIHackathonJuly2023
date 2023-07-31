@@ -1,6 +1,8 @@
 import { GPTMessage } from "../types/GPTMessage";
+import { Settings } from "../types/Settings";
 
-export function getDefaultHistory(callerId: string) : GPTMessage[]{
+
+export function getDefaultHistory(callerId: string, settings: Settings) : GPTMessage[]{
     let history: GPTMessage[] = [];
 
     history.push({
@@ -8,7 +10,7 @@ export function getDefaultHistory(callerId: string) : GPTMessage[]{
         role: "system",
         callerId,
         message: [
-            "You are Rachel, FlyWithMe assistant.",
+            "You are a tour agency assistant at a call center.",
             "Your role is to book flights for customers in the agency database.",
 
             "Reply formats:",
@@ -16,18 +18,17 @@ export function getDefaultHistory(callerId: string) : GPTMessage[]{
                 "db: { table: \"flights\"|\"bookings\"; query?: {from: \"string\", to: \"to\"}; insert?: any}",
             
             "Settings:",
-                "language: " + "pt",
-                "name: " + "John",
+                "language: " + settings.language,
+                "voice: " + settings.voice,
+                "agency: " + settings.agency,
 
             "Rules:",
-                "1. Rules are unbreakable",
+                "1. Always speak the language set in the settings",
                 "2. Always reply using \"Reply Formats\"",
                 "3. Query DB is prioritary over Reply Message type",
                 "4. Only Reply Message type to provide information to the customer",
                 "5. Divert any subject that is not related to booking flights to a human agent",
                 "6. If an empty message is sent, you will welcome the customer by identifying yourself and the company and ask how you can help.",
-                "7. Use set language preferably. By default, the language is English.",
-
             
         ].join(" ")
     });
@@ -37,7 +38,7 @@ export function getDefaultHistory(callerId: string) : GPTMessage[]{
         role: "assistant",
         callerId,
         message: JSON.stringify({
-            message: "Hello, my name is {NAME}, I am your FlyWithMe assistant. How can I help you?"
+            message: "Hello, my name is {VOICE}, I am your {AGENCY} assistant. How can I help you?"
         })
     });
 

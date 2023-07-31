@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sqlite3_1 = __importDefault(require("sqlite3"));
 class Database {
-    constructor(dbPath = './db/database.db') {
+    constructor(dbPath = 'database.db') {
         this.db = new sqlite3_1.default.Database(dbPath, (err) => {
             if (err) {
                 console.error('Error opening database:', err.message);
@@ -32,6 +32,7 @@ class Database {
       callerId TEXT PRIMARY KEY,
       history TEXT
     );`;
+        const dropFlightsTable = `DROP TABLE IF EXISTS Flights;`;
         const createFlightsTable = `CREATE TABLE IF NOT EXISTS Flights (
       flightNumber TEXT PRIMARY KEY,
       airline TEXT,
@@ -50,8 +51,21 @@ class Database {
       clientLocation TEXT,
       FOREIGN KEY (flightNumber) REFERENCES Flights(flightNumber)
     );`;
+        const insertFlights = `INSERT INTO Flights (flightNumber, airline, departureAirport, departureTime, arrivalAirport, arrivalTime, availableSeats)
+VALUES
+  ('AA123', 'American Airlines', 'JFK Airport, New York', '2023-08-01 10:00:00', 'LAX Airport, Los Angeles', '2023-08-01 14:00:00', 150),
+  ('UA456', 'United Airlines', 'LAX Airport, Los Angeles', '2023-08-02 12:00:00', 'JFK Airport, New York', '2023-08-02 16:00:00', 200),
+  ('DL789', 'Delta Airlines', 'ATL Airport, Atlanta', '2023-08-03 08:30:00', 'ORD Airport, Chicago', '2023-08-03 11:30:00', 100),
+  ('BA234', 'British Airways', 'LHR Airport, London', '2023-08-04 16:45:00', 'CDG Airport, Paris', '2023-08-04 19:30:00', 180),
+  ('AF567', 'Air France', 'CDG Airport, Paris', '2023-08-05 09:15:00', 'FRA Airport, Frankfurt', '2023-08-05 11:00:00', 120),
+  ('EK789', 'Emirates', 'DXB Airport, Dubai', '2023-08-06 13:00:00', 'JFK Airport, New York', '2023-08-06 19:30:00', 250),
+  ('SQ345', 'Singapore Airlines', 'SIN Airport, Singapore', '2023-08-07 18:30:00', 'LAX Airport, Los Angeles', '2023-08-07 23:15:00', 170),
+  ('QF678', 'Qantas', 'SYD Airport, Sydney', '2023-08-08 05:45:00', 'LHR Airport, London', '2023-08-08 13:30:00', 220),
+  ('EY123', 'Etihad Airways', 'AUH Airport, Abu Dhabi', '2023-08-09 11:20:00', 'JFK Airport, New York', '2023-08-09 16:45:00', 190),
+  ('CA987', 'Air China', 'PEK Airport, Beijing', '2023-08-10 14:00:00', 'JFK Airport, New York', '2023-08-10 20:45:00', 130);
+    `;
         return new Promise((resolve, reject) => {
-            const db = this.db.exec(createCallersTable + createFlightsTable + createBookingsTable);
+            const db = this.db.exec(createCallersTable + dropFlightsTable + createFlightsTable + insertFlights + createBookingsTable);
             if (db) {
                 resolve(db);
             }
@@ -128,7 +142,7 @@ class Database {
                         if (row) {
                             const caller = {
                                 callerId: row.callerId,
-                                history: row.history,
+                                history: JSON.parse(row.history),
                             };
                             resolve(caller);
                         }
@@ -143,7 +157,7 @@ class Database {
     upsertCaller(caller) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = 'INSERT OR REPLACE INTO Callers (callerId, history) VALUES (?, ?)';
-            const values = [caller.callerId, caller.history];
+            const values = [caller.callerId, JSON.stringify(caller.history)];
             return new Promise((resolve, reject) => {
                 this.db.run(query, values, (err) => {
                     if (err) {

@@ -17,18 +17,35 @@ const fs_1 = __importDefault(require("fs"));
 class ElevenLabsSpeechSynthesis {
     constructor(settings) {
         this.apiKey = settings.elevenLabs.apiKey;
-        this.voiceId = settings.elevenLabs.voiceId; // Replace with the appropriate voiceId
-        this.baseUrl = 'https://api.elevenlabs.io/v1/text-to-speech/';
+        this.voiceId = settings.elevenLabs.voiceId ? settings.elevenLabs.voiceId : '21m00Tcm4TlvDq8ikWAM'; // Replace with the appropriate voiceId
+        this.baseUrl = 'https://api.elevenlabs.io/v1/';
+    }
+    getVoice() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield axios_1.default.get(this.baseUrl + "voices/" + this.voiceId, {
+                    headers: {
+                        'accept': 'application/json',
+                        'xi-api-key': this.apiKey,
+                    },
+                });
+                return response.data;
+            }
+            catch (error) {
+                console.error('Error in getting voice settings:', error);
+                throw new Error('Failed to get voice settings.');
+            }
+        });
     }
     generateSpeech(text) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield axios_1.default.post(this.baseUrl + this.voiceId, {
+                const response = yield axios_1.default.post(this.baseUrl + "text-to-speech/" + this.voiceId, {
                     text: text,
-                    model_id: 'eleven_monolingual_v1',
+                    model_id: 'eleven_multilingual_v1',
                     voice_settings: {
-                        stability: 0.5,
-                        similarity_boost: 0.5,
+                        stability: 0.3,
+                        similarity_boost: 0.1,
                     },
                 }, {
                     headers: {
