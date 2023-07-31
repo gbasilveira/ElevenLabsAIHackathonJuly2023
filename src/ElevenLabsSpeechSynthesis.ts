@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { Settings } from './types/Settings';
 import fs from 'fs';
+import { createReadStream, createWriteStream } from 'fs';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
+import lame from 'lame';
+import wav from 'wav';
 
 class ElevenLabsSpeechSynthesis {
   private apiKey: string;
