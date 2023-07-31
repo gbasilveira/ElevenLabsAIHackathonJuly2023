@@ -1,0 +1,29 @@
+{
+  "name": "elevenlabsaihackathonjuly2023",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gbasilveira/ElevenLabsAIHackathonJuly2023.git"
+  },
+  "keywords": [],
+  "author": "Guilherme Silveira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gbasilveira/ElevenLabsAIHackathonJuly2023/issues"
+  },
+  "homepage": "https://github.com/gbasilveira/ElevenLabsAIHackathonJuly2023#readme",
+  "devDependencies": {
+    "@types/node": "^20.4.5"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "openai": "^3.3.0",
+    "sqlite": "^5.0.1",
+    "sqlite3": "^5.1.6"
+  }
+}
